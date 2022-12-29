@@ -1,0 +1,62 @@
+<Window
+    x:Class="Avalonia_Test.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Avalonia_Test.ViewModels"
+    Title="Avalonia_Test"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <StackPanel Margin="10,15,0,0">
+        <ToggleSwitch
+            FontFamily="Halvetica"
+            Foreground="White"
+            IsChecked="{Binding IsToggled}"
+            OffContent="Fit Video"
+            OnContent="Fit Video" />
+        <TextBlock
+            Padding="0,0,20,0"
+            ClipToBounds="True"
+            FontSize="10"
+            Foreground="Gray"
+            Text="When turned on, the whole video will fit the frame but may have blank space around it."
+            TextWrapping="Wrap" />
+        <Border
+            Width="200"
+            Height="130"
+            Margin="0,10,20,10"
+            BorderBrush="#333333"
+            BorderThickness=".5">
+            <Image
+                Width="198"
+                Margin="3,0,3,1"
+                Source="{Binding LocalVideo, Mode=OneWay}"
+                Stretch="{Binding Strech}" />
+        </Border>
+        <Button
+            Margin="0,5,0,5"
+            HorizontalAlignment="Center"
+            BorderThickness="0"
+            Command="{Binding ShowVideoCommand}"
+            CornerRadius="10">
+            Show Video
+        </Button>
+        <Button
+            Margin="0,5,0,5"
+            HorizontalAlignment="Center"
+            BorderThickness="0"
+            Command="{Binding CloseVideoCommand}"
+            CornerRadius="10">
+            Close Video
+        </Button>
+    </StackPanel>
+
+</Window>
