@@ -1,11 +1,5 @@
-﻿using IronSoftware.Drawing;
-using SIPSorceryMedia.FFmpeg;
+﻿using SIPSorceryMedia.FFmpeg;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Avalonia_Test
 {
@@ -22,17 +16,11 @@ namespace Avalonia_Test
         }
         private void _videoSource_OnVideoSourceRawSampleFaster (uint durationMilliseconds, SIPSorceryMedia.Abstractions.RawImage rawImage)
         {
-            AnyBitmap bmpImage = new System.Drawing.Bitmap(rawImage.Width, rawImage.Height, rawImage.Stride, System.Drawing.Imaging.PixelFormat.Format24bppRgb, rawImage.Sample);
-
-            //byte[] managedArray = new byte[rawImage.Height * rawImage.Stride];
-            //Marshal.Copy(rawImage.Sample, managedArray, 0, managedArray.Length);
-            //AnyBitmap bmpImage = AnyBitmap.FromBytes(managedArray);
-            FireUpdateVideoControlEvent(bmpImage, rawImage);
+            FireUpdateVideoControlEvent(rawImage);
         }
-        protected void FireUpdateVideoControlEvent (AnyBitmap image, SIPSorceryMedia.Abstractions.RawImage rawImage)
+        protected void FireUpdateVideoControlEvent (SIPSorceryMedia.Abstractions.RawImage rawImage)
         {
             UpdateVideoFrameEventArgs args = new UpdateVideoFrameEventArgs();
-            args.Image = image;
             args.RawImage = rawImage;
 
             EventHandler<UpdateVideoFrameEventArgs> handler = UPDATE_VIDEO_FRAME;

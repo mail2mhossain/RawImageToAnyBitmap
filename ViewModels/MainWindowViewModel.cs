@@ -1,14 +1,12 @@
-﻿using Avalonia.Controls;
-using Avalonia.Threading;
-using ReactiveUI;
+﻿using ReactiveUI;
 using Avalonia.Media.Imaging;
 using System;
 using System.IO;
 using SIPSorceryMedia.FFmpeg;
 using System.Collections.Generic;
-using System.Linq;
-using SIPSorceryMedia.Abstractions;
 using System.Reactive;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
 
 namespace Avalonia_Test.ViewModels
 {
@@ -75,18 +73,14 @@ namespace Avalonia_Test.ViewModels
         {
             _videoSource = new VideoCaptureDevice();
             _videoSource.UPDATE_VIDEO_FRAME += _videoSource_UPDATE_VIDEO_FRAME;
-            _videoSource.CaptureVideo(_cameras[0].Path);
+            _videoSource.CaptureVideo(_cameras![0].Path);
         }
         private void _videoSource_UPDATE_VIDEO_FRAME (object? sender, UpdateVideoFrameEventArgs e)
         {
-            Bitmap avaloniaImage;
-            using (MemoryStream memory = e.Image.ToStream())
-            {
-                memory.Position = 0;
-                avaloniaImage = new Bitmap(memory);
-            }
-            LocalVideo = avaloniaImage;
-        }
+			Image<Bgr24> image = ImageConverter.ConvertRawImageToImageSharp(e.RawImage);
+			Bitmap avaloniaBitmap = ImageConverter.ConvertImageSharpToAvaloniaBitmap(image);
+			LocalVideo = avaloniaBitmap;
+		}
         private void CloseVideo ()
         {
             if (_videoSource == null) return;
