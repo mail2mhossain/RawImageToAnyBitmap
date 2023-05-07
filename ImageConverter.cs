@@ -7,6 +7,7 @@ using SixLabors.ImageSharp;
 using System.IO;
 using Avalonia;
 using SixLabors.ImageSharp.Advanced;
+using SixLabors.ImageSharp.Processing;
 
 namespace Avalonia_Test
 {
@@ -61,6 +62,7 @@ namespace Avalonia_Test
 
 			// Load the pixel data from the span
 			var image = Image.LoadPixelData<Bgr24>(pixelDataSpan, rawImage.Width, rawImage.Height);
+			image.Mutate(x => x.Flip(FlipMode.Horizontal));
 
 			return image;
 		}

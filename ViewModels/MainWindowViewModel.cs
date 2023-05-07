@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Reactive;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp;
+using Avalonia.Controls.Shapes;
+using Avalonia.Platform;
+using Avalonia.Controls;
+using Avalonia;
 
 namespace Avalonia_Test.ViewModels
 {
@@ -46,7 +50,11 @@ namespace Avalonia_Test.ViewModels
             set => this.RaiseAndSetIfChanged(ref _strech, value);
         }
 
-        public ReactiveCommand<Unit, Unit>? ShowVideoCommand { get; set; }
+		private static OperatingSystemType? OperatingSystem => AvaloniaLocator.Current
+			.GetService<IRuntimePlatform>()
+			.GetRuntimeInfo().OperatingSystem;
+
+		public ReactiveCommand<Unit, Unit>? ShowVideoCommand { get; set; }
         public ReactiveCommand<Unit, Unit>? CloseVideoCommand { get; set; }
         public MainWindowViewModel ()
         {
@@ -57,15 +65,29 @@ namespace Avalonia_Test.ViewModels
         }
         private void InitializeDevices ()
         {
-            var dir = AppDomain.CurrentDomain.BaseDirectory;
-            var ffmpegWinPath = Path.Combine(dir, "ffmpeg");
+			string ffmpegPath = GetFfmpegPath();
 
-            if (Directory.Exists(ffmpegWinPath))
+            if (Directory.Exists(ffmpegPath))
             {
-                FFmpegInit.Initialise(FfmpegLogLevelEnum.AV_LOG_VERBOSE, ffmpegWinPath);
+                FFmpegInit.Initialise(FfmpegLogLevelEnum.AV_LOG_VERBOSE, ffmpegPath);
             }
         }
-        private void SetVideoSourceDevice()
+		private static string GetFfmpegPath ()
+		{
+			OperatingSystemType osType = AvaloniaLocator.Current.GetService<IRuntimePlatform>().GetRuntimeInfo().OperatingSystem;
+
+			if (osType == OperatingSystemType.Linux)
+				return "/usr/lib/x86_64-linux-gnu";
+
+			if (osType == OperatingSystemType.OSX)
+				return "/usr/local/Cellar/ffmpeg@4/4.4.3_4/lib";
+
+			var dir = AppDomain.CurrentDomain.BaseDirectory;
+			var ffmpegWinPath = System.IO.Path.Combine(dir, "ffmpeg");
+
+			return ffmpegWinPath;
+		}
+		private void SetVideoSourceDevice()
         {
             _cameras = FFmpegCameraManager.GetCameraDevices();
         }
